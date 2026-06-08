@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /siges/
+    
+    # Si la solicitud no es para un archivo real (css, js, imagen, etc.)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Redirigir todo a index.html
+    RewriteRule ^ index.html [L]
+</IfModule>
