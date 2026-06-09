@@ -1,4 +1,4 @@
-const CACHE_NAME = 'siges-v3';
+const CACHE_NAME = 'siges-v4';
 const urlsToCache = [
   '/',
   '/index.html',

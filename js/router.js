@@ -5,8 +5,8 @@ import ValuationView from './modules/valuation.js';
 import AuctionsView from './modules/auctions.js';
 import InventoryView from './modules/inventory.js';
 import NotificationsView from './modules/notifications.js';
-import FinanceView from './modules/finance.js';
 import LoginView from './modules/login.js';
+import FinanceView from './modules/finance.js';
 
 const routes = {
     '/': { view: DashboardView, roles: ['OWNER', 'EMPLOYEE', 'CLIENT'] },
@@ -20,26 +20,51 @@ const routes = {
     '/login': { view: LoginView, roles: ['PUBLIC'] }
 };
 
+// Detectar si estamos en localhost (XAMPP) o en Vercel
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const basePath = isLocal ? '/siges' : '';
+
 export function navigateTo(path) {
     const newPath = path.startsWith('/') ? path : '/' + path;
-    window.history.pushState({}, '', window.location.origin + '/siges' + newPath);
+    const fullPath = basePath + newPath;
+    window.history.pushState({}, '', window.location.origin + fullPath);
     loadRoute(newPath);
 }
 
-export function loadRoute(path = window.location.pathname.replace('/siges', '') || '/') {
-    const route = routes[path];
+export function loadRoute(path = null) {
+    // Obtener la ruta actual sin el basePath
+    let currentPath = path;
+    if (!currentPath) {
+        currentPath = window.location.pathname;
+        if (isLocal) {
+            currentPath = currentPath.replace(basePath, '') || '/';
+        }
+    }
+    
+    // Asegurar que la ruta tenga '/' al inicio
+    if (!currentPath.startsWith('/')) {
+        currentPath = '/' + currentPath;
+    }
+    
+    const route = routes[currentPath];
     const userRole = getUserRole();
 
     // Si la ruta no existe, mostrar 404
     if (!route) {
-        document.getElementById('main-content').innerHTML = `<div class="alert alert-danger">Página no encontrada.</div>`;
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) {
+            mainContent.innerHTML = `<div class="alert alert-danger">Página no encontrada: ${currentPath}</div>`;
+        }
         return;
     }
 
     // Si la ruta es pública, mostrar sin autenticación
     if (route.roles.includes('PUBLIC')) {
         const view = new route.view();
-        view.render(document.getElementById('main-content'));
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) {
+            view.render(mainContent);
+        }
         return;
     }
 
@@ -51,16 +76,23 @@ export function loadRoute(path = window.location.pathname.replace('/siges', '') 
 
     // Verificar si el rol del usuario está permitido en la ruta
     if (!route.roles.includes(userRole)) {
-        document.getElementById('main-content').innerHTML = `<div class="alert alert-danger">Acceso denegado. No tienes permiso.</div>`;
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) {
+            mainContent.innerHTML = `<div class="alert alert-danger">Acceso denegado. No tienes permiso para ver esta página.</div>`;
+        }
         return;
     }
 
     // Renderizar la vista
     const view = new route.view();
-    view.render(document.getElementById('main-content'));
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+        view.render(mainContent);
+    }
 }
 
+// Manejar eventos de navegación (botones atrás/adelante)
 window.onpopstate = () => loadRoute();
 
-// Exponer navigateTo globalmente para uso en onclick
+// Exponer navigateTo globalmente
 window.navigateTo = navigateTo;
