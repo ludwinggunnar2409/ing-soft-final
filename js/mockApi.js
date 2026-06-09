@@ -2,6 +2,28 @@ import { generateId, formatDate } from './utils/helpers.js';
 import { getUSDRate, convertToBOB } from './utils/currency.js';
 
 // Datos iniciales simulados
+
+// Productos de ejemplo para subastas (con imágenes)
+const sampleProducts = [
+    { id: 'prod1', name: 'iPhone 14 Pro', description: '256GB, color morado, como nuevo', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk77pl-B7sASOuVQjW4JHZNK3loBt0kXKcVw&s', category: 'Electrónica', startingPrice: 5000 },
+    { id: 'prod2', name: 'Rolex Datejust', description: 'Acero inoxidable, año 2020', image: 'https://mywatchllc.com/cdn/shop/files/0C1191CA-778F-47FD-99BD-D59092B1926C.jpg?v=1710446245&width=823', category: 'Joyería', startingPrice: 15000 },
+    { id: 'prod3', name: 'Samsung QLED 65"', description: 'TV 4K, modelo 2023', image: 'https://sm.pcmag.com/t/pcmag_me/review/s/samsung-65/samsung-65-inch-s95c-oled-tv_1ruf.1920.jpg', category: 'Electrónica', startingPrice: 3500 },
+    { id: 'prod4', name: 'Anillo de diamantes', description: '18k oro blanco, 1.5 quilates', image: 'https://cristaljoyas.com/media/catalog/product/cache/84670e791a5bf9945d428408edd61f53/a/s/as4rb-11642ew.jpg', category: 'Joyería', startingPrice: 8000 },
+    { id: 'prod5', name: 'MacBook Pro M2', description: '16GB RAM, 512GB SSD', image: 'https://techcrunch.com/wp-content/uploads/2023/01/CMC_5928.jpg?resize=668,445', category: 'Electrónica', startingPrice: 7500 }
+];
+
+// Función de registro
+register: async (userData) => {
+    const existing = users.find(u => u.email === userData.email);
+    if (existing) throw new Error('El correo ya está registrado');
+    const newUser = { id: generateId(), ...userData, password: userData.password };
+    users.push(newUser);
+    return newUser;
+},
+
+// Obtener productos públicos
+getPublicProducts; () => sampleProducts.map(p => ({ ...p, image: p.image || 'https://picsum.photos/id/20/200/200' }))
+
 let users = [
     { id: '1', name: 'Dueño SIGES', email: 'owner@siges.com', password: 'owner123', role: 'OWNER' },
     { id: '2', name: 'Empleado Juan', email: 'empleado@siges.com', password: 'emp123', role: 'EMPLOYEE' },

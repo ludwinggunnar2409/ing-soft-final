@@ -35,19 +35,24 @@ export function renderNavbar(container) {
         } else {
             menuItems = [
                 { label: 'Dashboard', path: '/dashboard' },
-                { label: 'Subastas', path: '/auctions' },
+                { label: 'Mis Subastas', path: '/auctions' },
                 { label: 'Notificaciones', path: '/notifications' }
             ];
         }
     } else {
-        menuItems = [{ label: 'Login', path: '/login' }];
+        // Usuario no autenticado - evitar duplicados
+        menuItems = [
+            { label: 'Ver Subastas', path: '/auctions' },
+            { label: 'Registrarse', path: '/register' },
+            { label: 'Iniciar Sesión', path: '/login' }
+        ];
     }
 
     const collapseId = 'navbarCollapse';
     const navHtml = `
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="#" onclick="window.navigateTo('/dashboard')">🏦 SIGES</a>
+                <a class="navbar-brand" href="#" onclick="window.navigateTo('/')">🏦 SIGES</a>
                 <button class="navbar-toggler" type="button" id="navbarToggler" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -60,11 +65,11 @@ export function renderNavbar(container) {
                             <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdownBtn">
                                 ${userName}
                             </button>
-                            <ul class="dropdown-menu" id="userDropdownMenu" style="display: none; position: absolute; right: 0; background: white; list-style: none; padding: 0.5rem 0; margin: 0; border-radius: 0.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); min-width: 150px;">
+                            <ul class="dropdown-menu" id="userDropdownMenu" style="display: none; position: absolute; right: 0; background: white; list-style: none; padding: 0.5rem 0; margin: 0; border-radius: 0.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); min-width: 150px; z-index: 1000;">
                                 <li><a class="dropdown-item" href="#" id="logoutLink" style="display: block; padding: 0.5rem 1rem; color: #333; text-decoration: none;">Cerrar sesión</a></li>
                             </ul>
                         </div>
-                    ` : `<a href="#" class="btn btn-outline-light" onclick="window.navigateTo('/login')">Ingresar</a>`}
+                    ` : ``}
                 </div>
             </div>
         </nav>
@@ -72,12 +77,11 @@ export function renderNavbar(container) {
 
     container.innerHTML = navHtml;
 
-    // ----- MANEJO MANUAL DEL COLAPSO (sin Bootstrap) -----
+    // MANEJO MANUAL DEL COLAPSO
     const toggler = document.getElementById('navbarToggler');
     const collapseDiv = document.getElementById(collapseId);
     
     if (toggler && collapseDiv) {
-        // Función para alternar el colapso
         const toggleCollapse = () => {
             if (collapseDiv.classList.contains('show')) {
                 collapseDiv.classList.remove('show');
@@ -90,7 +94,6 @@ export function renderNavbar(container) {
         
         toggler.addEventListener('click', toggleCollapse);
         
-        // Cerrar el menú al hacer clic en un enlace
         const navLinks = collapseDiv.querySelectorAll('[data-nav-link]');
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -105,7 +108,7 @@ export function renderNavbar(container) {
         });
     }
 
-    // ----- DROPDOWN MANUAL -----
+    // DROPDOWN MANUAL
     if (isAuth) {
         const toggleBtn = document.getElementById('userDropdownBtn');
         const dropdownMenu = document.getElementById('userDropdownMenu');
@@ -116,7 +119,7 @@ export function renderNavbar(container) {
                 dropdownMenu.style.display = isVisible ? 'none' : 'block';
             });
             document.addEventListener('click', function closeDropdown(e) {
-                if (!toggleBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                if (toggleBtn && dropdownMenu && !toggleBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
                     dropdownMenu.style.display = 'none';
                 }
             });
