@@ -1,25 +1,20 @@
-const CACHE_NAME = 'siges-v5';
-
-// Solo cachear recursos esenciales (no páginas completas)
+const CACHE_NAME = 'siges-v6';
 const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
   '/css/styles.css'
-  // Los JS se cachearán dinámicamente al usarse
 ];
 
-// Instalación: cachear solo lo esencial
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
-      .catch(err => console.log('Cache falló:', err))
+      .catch(err => console.log('Cache inicial falló:', err))
   );
   self.skipWaiting();
 });
 
-// Activación: limpiar caches viejos
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => Promise.all(
@@ -29,11 +24,10 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch: estrategia "network first" para navegación, "cache first" para recursos
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   
-  // Para navegación (HTML), usar network first con fallback a index.html
+  // Solo para navegación (HTML)
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
@@ -42,9 +36,15 @@ self.addEventListener('fetch', event => {
     return;
   }
   
-  // Para recursos estáticos (CSS, JS, etc.), usar cache first
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
-  );
+  // Para recursos estáticos (CSS, JS, JSON)
+  if (url.pathname.match(/\.(css|js|json|png|jpg|jpeg|svg|ico)$/)) {
+    event.respondWith(
+      caches.match(event.request)
+        .then(response => response || fetch(event.request))
+    );
+    return;
+  }
+  
+  // Para todo lo demás, ir a la red (sin cachear)
+  event.respondWith(fetch(event.request));
 });
