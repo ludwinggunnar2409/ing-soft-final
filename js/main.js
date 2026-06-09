@@ -17,36 +17,25 @@ if ('serviceWorker' in navigator) {
 // Inicializar datos simulados
 console.log('Verificando inicialización...');
 console.log('siges_initialized:', localStorage.getItem('siges_initialized'));
-console.log('Subastas actuales:', MockAPI.getAuctions().length);
+console.log('Subastas actuales antes de inicializar:', MockAPI.getAuctions().length);
 
 if (!localStorage.getItem('siges_initialized')) {
     console.log('🔄 Inicializando datos por primera vez...');
     
     MockAPI.addNotification('Bienvenido al sistema SIGES - Versión Demo');
     
-    // Crear subastas de ejemplo con productos
-    const products = MockAPI.getPublicProducts();
-    console.log('Productos obtenidos:', products.length);
-    
-    products.forEach(product => {
-        const auction = MockAPI.createAuction({
-            id: product.id,
-            name: product.name,
-            description: product.description,
-            image: product.image,
-            currentPrice: product.startingPrice,
-            startingPrice: product.startingPrice,
-            status: 'ACTIVE',
-            endTime: Date.now() + 7 * 86400000
-        });
-        console.log('Subasta creada:', auction.name);
-    });
+    // Crear subastas de ejemplo con productos usando el nuevo método
+    MockAPI.initializeSampleAuctions();
     
     localStorage.setItem('siges_initialized', 'true');
     console.log('✅ Datos iniciales creados');
 } else {
     console.log('⚠️ Datos ya inicializados previamente');
+    // Asegurar que las subastas existan aunque ya esté inicializado
+    MockAPI.initializeSampleAuctions();
 }
+
+console.log('Subastas actuales después de inicializar:', MockAPI.getAuctions().length);
 
 // Función para refrescar el navbar
 export function refreshNavbar() {

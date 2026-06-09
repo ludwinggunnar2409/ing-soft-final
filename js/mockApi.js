@@ -11,9 +11,24 @@ let pawns = [
     { id: 'p1', name: 'iPhone 13', category: 'Electrónica', photos: [], status: 'ACTIVE', valuation: 2500, loanAmount: 1750, interestRate: 0.05, startDate: new Date().toISOString(), dueDate: new Date(Date.now()+30*86400000).toISOString(), clientId: '3', location: 'A1-B2-C3' }
 ];
 
+// Cargar subastas desde localStorage o inicializar vacío
 let auctions = [];
 let bids = [];
 let notifications = [];
+
+// Función para guardar subastas en localStorage
+function saveAuctionsToLocalStorage() {
+    localStorage.setItem('siges_auctions', JSON.stringify(auctions));
+}
+
+// Función para cargar subastas desde localStorage
+function loadAuctionsFromLocalStorage() {
+    const saved = localStorage.getItem('siges_auctions');
+    if (saved) {
+        auctions = JSON.parse(saved);
+        console.log('Subastas cargadas desde localStorage:', auctions.length);
+    }
+}
 
 // Productos de ejemplo para subastas (con imágenes reales)
 const sampleProducts = [
@@ -23,6 +38,9 @@ const sampleProducts = [
     { id: 'prod4', name: 'Anillo de diamantes', description: '18k oro blanco, 1.5 quilates', image: 'https://cristaljoyas.com/media/catalog/product/cache/84670e791a5bf9945d428408edd61f53/a/s/as4rb-11642ew.jpg', category: 'Joyería', startingPrice: 8000 },
     { id: 'prod5', name: 'MacBook Pro M2', description: '16GB RAM, 512GB SSD', image: 'https://techcrunch.com/wp-content/uploads/2023/01/CMC_5928.jpg?resize=668,445', category: 'Electrónica', startingPrice: 7500 }
 ];
+
+// Cargar subastas al inicio
+loadAuctionsFromLocalStorage();
 
 export const MockAPI = {
     // Autenticación
@@ -67,6 +85,31 @@ export const MockAPI = {
         return sampleProducts.map(p => ({ ...p, image: p.image || 'https://picsum.photos/id/20/200/200' }));
     },
 
+    // Inicializar subastas de ejemplo (solo si no hay)
+    initializeSampleAuctions: () => {
+        if (auctions.length === 0) {
+            console.log('Creando subastas de ejemplo...');
+            sampleProducts.forEach(product => {
+                const auction = {
+                    id: product.id,
+                    name: product.name,
+                    description: product.description,
+                    image: product.image,
+                    currentPrice: product.startingPrice,
+                    startingPrice: product.startingPrice,
+                    status: 'ACTIVE',
+                    endTime: Date.now() + 7 * 86400000,
+                    bids: []
+                };
+                auctions.push(auction);
+            });
+            saveAuctionsToLocalStorage();
+            console.log('Subastas creadas:', auctions.length);
+        } else {
+            console.log('Subastas ya existentes:', auctions.length);
+        }
+    },
+
     // Prendas/Empeños
     getPawns: () => [...pawns],
 
@@ -89,7 +132,7 @@ export const MockAPI = {
     },
 
     // Subastas
-    getAuctions: () => auctions,
+    getAuctions: () => [...auctions],
 
     createAuction: (auctionData) => { 
         const auction = { 
@@ -104,6 +147,7 @@ export const MockAPI = {
             bids: []
         }; 
         auctions.push(auction); 
+        saveAuctionsToLocalStorage();
         return auction; 
     },
 
@@ -113,6 +157,7 @@ export const MockAPI = {
         if (amount <= auction.currentPrice) throw new Error('La puja debe ser mayor al precio actual'); 
         auction.currentPrice = amount; 
         bids.push({ auctionId, userId, amount, time: new Date() }); 
+        saveAuctionsToLocalStorage();
         return auction; 
     },
 
