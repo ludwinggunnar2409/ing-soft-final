@@ -19,7 +19,7 @@ const routes = {
     '/dashboard': { view: DashboardView, roles: ['OWNER', 'EMPLOYEE', 'CLIENT'] },
     '/pawns': { view: PawnsView, roles: ['EMPLOYEE', 'OWNER'] },
     '/valuation': { view: ValuationView, roles: ['EMPLOYEE', 'OWNER'] },
-    '/auctions': { view: AuctionsView, roles: ['PUBLIC'] },  // Pública para ver subastas
+    '/auctions': { view: AuctionsView, roles: ['PUBLIC'] },
     '/inventory': { view: InventoryView, roles: ['EMPLOYEE', 'OWNER'] },
     '/notifications': { view: NotificationsView, roles: ['CLIENT', 'EMPLOYEE', 'OWNER'] },
     '/finance': { view: FinanceView, roles: ['OWNER'] },
