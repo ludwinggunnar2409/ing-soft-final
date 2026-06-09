@@ -1,13 +1,12 @@
 const CACHE_NAME = 'siges-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/css/styles.css',
-  '/js/main.js',
-  '/js/router.js',
-  '/js/auth.js',
-  '/js/mockApi.js',
+  '/siges/',
+  '/siges/index.html',
+  '/siges/css/styles.css',
+  '/siges/js/main.js',
+  '/siges/js/router.js',
+  '/siges/js/auth.js',
+  '/siges/js/mockApi.js',
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css',
   'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css'
 ];
