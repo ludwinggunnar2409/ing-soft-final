@@ -5,19 +5,22 @@ import { MockAPI } from './mockApi.js';
 
 console.log('✅ main.js cargado');
 
-// Desregistrar Service Workers
+// REGISTRAR Service Worker (NO desregistrar)
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(registrations => {
-        registrations.forEach(reg => reg.unregister());
-        console.log('Service Workers desregistrados');
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('✅ SW registrado:', reg))
+            .catch(err => console.log('❌ SW error:', err));
     });
 }
 
 // Inicializar datos simulados
 if (!localStorage.getItem('siges_initialized')) {
     MockAPI.addNotification('Bienvenido al sistema SIGES - Versión Demo');
-    // Crear subastas de ejemplo
-    MockAPI.createAuction('p1', 1750);
+    // Crear subastas de ejemplo si no existen
+    if (MockAPI.getAuctions().length === 0) {
+        MockAPI.createAuction('p1', 1750);
+    }
     localStorage.setItem('siges_initialized', 'true');
     console.log('Datos iniciales creados');
 }
