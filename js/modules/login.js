@@ -10,7 +10,7 @@ export default class LoginView {
                     <div class="card shadow">
                         <div class="card-header bg-dark text-white text-center">
                             <h3>🏦 SIGES - Sistema de Empeños</h3>
-                            <small>Mockup funcional PWA</small>
+                            <small>Mockup PWA</small>
                         </div>
                         <div class="card-body">
                             <form id="loginForm">
