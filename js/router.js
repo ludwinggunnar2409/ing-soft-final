@@ -49,6 +49,8 @@ export function loadRoute(path = null) {
         currentPath = '/' + currentPath;
     }
     
+    console.log('Cargando ruta:', currentPath); // Debug
+    
     const route = routes[currentPath];
     const userRole = getUserRole();
     const mainContent = document.getElementById('main-content');
@@ -61,8 +63,11 @@ export function loadRoute(path = null) {
         return;
     }
 
+    console.log('Ruta encontrada, roles:', route.roles); // Debug
+
     // Si la ruta es pública, mostrar sin autenticación
     if (route.roles.includes('PUBLIC')) {
+        console.log('Ruta pública, renderizando vista'); // Debug
         const view = new route.view();
         view.render(mainContent);
         return;

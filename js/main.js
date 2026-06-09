@@ -15,13 +15,21 @@ if ('serviceWorker' in navigator) {
 }
 
 // Inicializar datos simulados
+console.log('Verificando inicialización...');
+console.log('siges_initialized:', localStorage.getItem('siges_initialized'));
+console.log('Subastas actuales:', MockAPI.getAuctions().length);
+
 if (!localStorage.getItem('siges_initialized')) {
+    console.log('🔄 Inicializando datos por primera vez...');
+    
     MockAPI.addNotification('Bienvenido al sistema SIGES - Versión Demo');
     
     // Crear subastas de ejemplo con productos
     const products = MockAPI.getPublicProducts();
+    console.log('Productos obtenidos:', products.length);
+    
     products.forEach(product => {
-        MockAPI.createAuction({
+        const auction = MockAPI.createAuction({
             id: product.id,
             name: product.name,
             description: product.description,
@@ -31,10 +39,13 @@ if (!localStorage.getItem('siges_initialized')) {
             status: 'ACTIVE',
             endTime: Date.now() + 7 * 86400000
         });
+        console.log('Subasta creada:', auction.name);
     });
     
     localStorage.setItem('siges_initialized', 'true');
-    console.log('Datos iniciales creados');
+    console.log('✅ Datos iniciales creados');
+} else {
+    console.log('⚠️ Datos ya inicializados previamente');
 }
 
 // Función para refrescar el navbar
@@ -47,6 +58,7 @@ export function refreshNavbar() {
 
 // Función de inicio
 function init() {
+    console.log('🚀 Iniciando aplicación...');
     refreshNavbar();
     loadRoute();
 }
