@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>SIGES - Sistema de Gestión de Empeños</title>
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/siges/manifest.json">
     <meta name="theme-color" content="#2c3e50">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div id="app">
@@ -17,26 +17,14 @@
         <main id="main-content" class="container mt-4"></main>
     </div>
 
-    
-
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script type="importmap">
-        {
-            "imports": {
-                "jspdf": "https://cdn.skypack.dev/jspdf@2.5.1"
-            }
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script type="module" src="/js/main.js"></script>
+    
+    <!-- Módulo principal - ruta relativa -->
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
-
-<!--
-    Abre http://localhost/siges/ en XAMPP.
-    Usa usuario: owner@siges.com / owner123 (dueño), empleado@siges.com / emp123, cliente@mail.com / cli123.
-    Desde Chrome o Edge, podrás instalar la app desde el botón de "instalar" en la barra de direcciones (por ser PWA).
--->

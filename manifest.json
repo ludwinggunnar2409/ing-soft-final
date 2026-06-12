@@ -2,7 +2,7 @@
   "name": "SIGES Empeños",
   "short_name": "SIGES",
   "description": "Sistema de Gestión de Empeños",
-  "start_url": "/",
+  "start_url": "/siges/",
   "display": "standalone",
   "theme_color": "#2c3e50",
   "background_color": "#ffffff",

@@ -5,37 +5,29 @@ import { MockAPI } from './mockApi.js';
 
 console.log('✅ main.js cargado');
 
-// REGISTRAR Service Worker
+// Registrar Service Worker (opcional)
+// Registrar Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
+        navigator.serviceWorker.register('/siges/sw.js')
             .then(reg => console.log('✅ SW registrado:', reg))
             .catch(err => console.log('❌ SW error:', err));
     });
 }
 
-// Inicializar datos simulados
-console.log('Verificando inicialización...');
-console.log('siges_initialized:', localStorage.getItem('siges_initialized'));
-console.log('Subastas actuales antes de inicializar:', MockAPI.getAuctions().length);
+// ============================================
+// FORZAR CREACIÓN DE SUBASTAS (IGNORAR LOCALSTORAGE)
+// ============================================
+console.log('🔄 FORZANDO creación de subastas...');
 
-if (!localStorage.getItem('siges_initialized')) {
-    console.log('🔄 Inicializando datos por primera vez...');
-    
-    MockAPI.addNotification('Bienvenido al sistema SIGES - Versión Demo');
-    
-    // Crear subastas de ejemplo con productos usando el nuevo método
-    MockAPI.initializeSampleAuctions();
-    
-    localStorage.setItem('siges_initialized', 'true');
-    console.log('✅ Datos iniciales creados');
-} else {
-    console.log('⚠️ Datos ya inicializados previamente');
-    // Asegurar que las subastas existan aunque ya esté inicializado
-    MockAPI.initializeSampleAuctions();
-}
+// Limpiar bandera para que se ejecute initializeSampleData
+localStorage.removeItem('siges_initialized');
 
-console.log('Subastas actuales después de inicializar:', MockAPI.getAuctions().length);
+// Ejecutar inicialización
+MockAPI.initializeSampleData();
+
+// Verificar resultado
+console.log('📊 Subastas después de inicializar:', MockAPI.getAuctions().length);
 
 // Función para refrescar el navbar
 export function refreshNavbar() {

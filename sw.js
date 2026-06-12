@@ -1,26 +1,20 @@
-const CACHE_NAME = 'siges-v7';
+const CACHE_NAME = 'siges-v10';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/css/styles.css',
-  '/js/main.js',
-  '/js/router.js',
-  '/js/auth.js',
-  '/js/mockApi.js',
-  '/js/components/navbar.js',
-  '/js/modules/dashboard.js',
-  '/js/modules/login.js'
+  '/siges/',
+  '/siges/index.html',
+  '/siges/manifest.json',
+  '/siges/css/styles.css',
+  '/siges/js/main.js',
+  '/siges/js/router.js',
+  '/siges/js/auth.js',
+  '/siges/js/mockApi.js'
 ];
 
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Cache abierto');
-        return cache.addAll(urlsToCache);
-      })
-      .catch(err => console.log('Error de cache:', err))
+      .then(cache => cache.addAll(urlsToCache))
+      .catch(err => console.log('Cache error:', err))
   );
   self.skipWaiting();
 });
@@ -28,12 +22,8 @@ self.addEventListener('install', event => {
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
-      .then(response => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      })
+      .then(response => response || fetch(event.request))
+      .catch(() => caches.match('/siges/index.html'))
   );
 });
 
@@ -41,9 +31,7 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(keys.map(key => {
-        if (key !== CACHE_NAME) {
-          return caches.delete(key);
-        }
+        if (key !== CACHE_NAME) return caches.delete(key);
       }));
     })
   );
