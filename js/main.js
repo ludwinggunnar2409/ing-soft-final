@@ -2,10 +2,10 @@ import { loadRoute } from './router.js';
 import { renderNavbar } from './components/navbar.js';
 import { logout, isAuthenticated } from './auth.js';
 import { MockAPI } from './mockApi.js';
+import { generateDemoData } from './utils/demoData.js';
 
 console.log('✅ main.js cargado');
 
-// Registrar Service Worker (opcional)
 // Registrar Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -15,19 +15,25 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// ============================================
-// FORZAR CREACIÓN DE SUBASTAS (IGNORAR LOCALSTORAGE)
-// ============================================
-console.log('🔄 FORZANDO creación de subastas...');
+// Generar datos de demostración (si no existen o forzar)
+if (!localStorage.getItem('siges_demo_generated')) {
+    console.log('🏪 Generando datos de demostración por primera vez...');
+    MockAPI.initializeSampleData();
+    generateDemoData();
+    localStorage.setItem('siges_demo_generated', 'true');
+} else {
+    console.log('⚠️ Datos demo ya existentes');
+    // Asegurar que haya subastas
+    if (MockAPI.getAuctions().length === 0) {
+        MockAPI.initializeSampleData();
+    }
+}
 
-// Limpiar bandera para que se ejecute initializeSampleData
-localStorage.removeItem('siges_initialized');
-
-// Ejecutar inicialización
-MockAPI.initializeSampleData();
-
-// Verificar resultado
-console.log('📊 Subastas después de inicializar:', MockAPI.getAuctions().length);
+console.log('📊 Estado actual:', {
+    empeños: MockAPI.getPawns().length,
+    subastas: MockAPI.getAuctions().length,
+    notificaciones: MockAPI.getNotifications().length
+});
 
 // Función para refrescar el navbar
 export function refreshNavbar() {
